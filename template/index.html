@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block countent%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        // API to get data
+        async function fetchData() {
+            try {
+                const response = await fetch('http://127.0.0.1:80/api/v1/live/');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("مشکلی در دریافت داده‌ها وجود دارد:", error);
+            }
+        }
+
+        // func to create chart
+        async function createChart() {
+            const data = await fetchData();
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        label: 'مقادیر',
+                        data: Object.values(data),
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)',
+                            'rgba(201, 203, 207, 0.8)',
+                            'rgba(255, 99, 132, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(201, 203, 207, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            barPercentage: 0.5 // config the wide of cloume
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // func to update chart
+            setInterval(async () => {
+                const newData = await fetchData();
+                chart.data.labels = Object.keys(newData);
+                chart.data.datasets[0].data = Object.values(newData);
+                chart.update();
+            }, 120000); // update every to minute
+        }
+
+        // create chart
+        createChart();
+    </script>
+</body>
+</html>
+{% endblock %}
+

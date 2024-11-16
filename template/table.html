@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block countent%}
+
+<div class="col-lg-9">
+    <!-- Card -->
+    <div class="card">
+        <!-- Body -->
+        <div class="card-body">
+            <div class="row">
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                
+                                <th scope="col">تاریخ</th>
+                                <th scope="col">کاریزما</th>
+                                <th scope="col">آوند مفید</th>
+                                <th scope="col">شتاب</th>
+                                <th scope="col">جهش</th>
+                                <th scope="col">موج</th>
+                                <th scope="col">نارنج</th>
+                                <th scope="col">بیدار</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                        {% for row in data %}
+                            <tr>
+                                
+                                <td>{{ row.date }}</td>
+                                <td>{{ row.Leverage_percentage_1 }}</td>
+                                <td>{{ row.Leverage_percentage_2 }}</td>
+                                <td>{{ row.Leverage_percentage_3 }}</td>
+                                <td>{{ row.Leverage_percentage_4 }}</td>
+                                <td>{{ row.Leverage_percentage_5 }}</td>
+                                <td>{{ row.Leverage_percentage_6 }}</td>
+                                <td>{{ row.Leverage_percentage_7 }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        
+                    </table>
+                </div>
+                <!-- End Table -->
+
+            </div>
+            <!-- End Row -->
+
+        </div>
+        <!-- End Body -->
+    </div>
+    <!-- End Card -->
+</div>
+
+{% endblock %}

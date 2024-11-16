@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block countent %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>نمودار درصد اهرمی</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@latest/dist/font-face.css" rel="stylesheet"
+          type="text/css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/fa.min.js"></script> <!-- اضافه کردن locale فارسی -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script> <!-- اضافه کردن پلاگین -->
+    <style>
+        /* تنظیمات ریسپانسیو برای نمودار */
+        #myChart {
+            width: 100%; /* عرض 100 درصد */
+            height: 100vh; /* ارتفاع 100 درصد صفحه */
+        }
+
+        /* برای اطمینان از اینکه صفحه بدون مشکل بارگذاری می‌شود */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div style="width: 100%; height: 100vh; margin: auto;">
+        <canvas id="myChart"></canvas>
+    </div>
+    <script>
+        moment.locale('fa'); // تنظیم زبان فارسی برای Moment.js
+
+        // Update the locale to ensure full Persian month names
+        moment.updateLocale('fa', {
+            months: [
+                'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+                'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+            ],
+            monthsShort: [
+                'فر', 'ارد', 'خرد', 'تیر', 'مرد', 'شه', 'مهر', 'آبا', 'آذر', 'دی', 'بهمن', 'اسف'
+            ]
+        });
+
+        // get data from context
+        const fund1Dates = {{ fund_data.charisma.dates|safe }};
+        const fund1Leverages = {{ fund_data.charisma.leverages|safe }};
+        const fund2Dates = {{ fund_data.tavan_mofid.dates|safe }};
+        const fund2Leverages = {{ fund_data.tavan_mofid.leverages|safe }};
+        const fund3Dates = {{ fund_data.setab_agah.dates|safe }};
+        const fund3Leverages = {{ fund_data.setab_agah.leverages|safe }};
+        const fund4Dates = {{ fund_data.jahesh_farabi.dates|safe }};
+        const fund4Leverages = {{ fund_data.jahesh_farabi.leverages|safe }};
+        const fund5Dates = {{ fund_data.moj_firooze.dates|safe }};
+        const fund5Leverages = {{ fund_data.moj_firooze.leverages|safe }};
+        const fund6Dates = {{ fund_data.narenj.dates|safe }};
+        const fund6Leverages = {{ fund_data.narenj.leverages|safe }};
+        const fund7Dates = {{ fund_data.bidar.dates|safe }};
+        const fund7Leverages = {{ fund_data.bidar.leverages|safe }};
+
+        // Provide data for every fund (convert dates to Moment.js format)
+        const fund1Data = fund1Dates.map((date, index) => ({
+            x: moment(date, 'YYYY-MM-DD').startOf('day').toISOString(), // حذف ساعت با startOf('day')
+            y: fund1Leverages[index]
+        }));
+        const fund2Data = fund2Dates.map((date, index) => ({
+            x: moment(date, 'YYYY-MM-DD').startOf('day').toISOString(),
+            y: fund2Leverages[index]
+        }));
+        const fund3Data = fund3Dates.map((date, index) => ({
+            x: moment(date, 'YYYY-MM-DD').startOf('day').toISOString(),
+            y: fund3Leverages[index]
+        }));
+        const fund4Data = fund4Dates.map((date, index) => ({
+            x: moment(date, 'YYYY-MM-DD').startOf('day').toISOString(),
+            y: fund4Leverages[index]
+        }));
+        const fund5Data = fund5Dates.map((date, index) => ({
+            x: moment(date, 'YYYY-MM-DD').startOf('day').toISOString(),
+            y: fund5Leverages[index]
+        }));
+        const fund6Data = fund6Dates.map((date, index) => ({
+            x: moment(date, 'YYYY-MM-DD').startOf('day').toISOString(),
+            y: fund6Leverages[index]
+        }));
+        const fund7Data = fund7Dates.map((date, index) => ({
+            x: moment(date, 'YYYY-MM-DD').startOf('day').toISOString(),
+            y: fund7Leverages[index]
+        }));
+
+        // Create chart
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: 'صندوق کاریزما',
+                        data: fund1Data,
+                        borderColor: '#f3980b',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'صندوق آوند مفید',
+                        data: fund2Data,
+                        borderColor: '#d3f30b',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'صندوق شتاب',
+                        data: fund3Data,
+                        borderColor: '#0bf36d',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'صندوق جهش',
+                        data: fund4Data,
+                        borderColor: '#0bc5f3',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'صندوق موج',
+                        data: fund5Data,
+                        borderColor: '#430bf3',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'صندوق نارنج',
+                        data: fund6Data,
+                        borderColor: '#f30b23',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'صندوق بیدار',
+                        data: fund7Data,
+                        borderColor: '#f0babf',
+                        borderWidth: 2,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true, // فعال کردن ریسپانسیو بودن
+                maintainAspectRatio: false, // اجازه به نمودار برای پر کردن فضا
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        // تغییر فرمت تاریخ برای تولتیپ
+                        title: function(tooltipItem) {
+                            return moment(tooltipItem[0].xLabel).format('MMMM YYYY'); 
+                        },
+                        label: function(tooltipItem) {
+                            return `درصد اهرمی: ${tooltipItem.yLabel}`;
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        title: {
+                            display: true,
+                            text: 'تاریخ',
+                            font: {
+                                family: 'Vazir',
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            color: '#000'
+                        },
+                        time: {
+                            unit: 'month',
+                            displayFormats: {
+                                month: 'MMMM YYYY' // نمایش ماه و سال به صورت کامل
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Vazir',
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            color: '#000',
+                            maxRotation: 0, 
+                            autoSkip: true, 
+                            maxTicksLimit: 20, 
+                            major: {
+                                fontStyle: 'bold',
+                            }
+                        },
+                        offset: true 
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'درصد اهرمی',
+                            font: {
+                                family: 'Vazir',
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            color: '#000'
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Vazir',
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            color: '#000'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

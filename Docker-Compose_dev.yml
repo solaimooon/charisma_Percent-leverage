@@ -1,0 +1,118 @@
+version: '3'
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    ports:
+      - "3307:3306"
+    
+    networks:
+      - my_network   
+
+    restart: always
+
+    
+  backend:
+    container_name: backend
+    build: .
+    command: sh -c "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn karisma_test.wsgi --bind 0.0.0.0:8000"
+    volumes:
+      - .:/backend
+      - static_volume:/backend/static_file
+      - media_volume:/backend/media
+    expose:
+      - "8000"
+    environment:
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - DB_PORT=3306
+      - debug=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - DJANGO_ENV=development
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+
+    networks:
+      - my_network
+    restart: always
+
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    build: .
+    command: celery -A karisma_test worker -l INFO
+    volumes:
+      - .:/backend
+    environment:
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - DB_PORT=3306
+      - debug=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - DJANGO_ENV=development
+      - CELERY_BROKER=redis://redis:6379
+      - CELERY_BACKEND=redis://redis:6379
+      - DJANGO_SETTINGS_MODULE=karisma_test.settings.development
+    depends_on:
+      - backend
+      - redis
+      - selenium
+    restart: always
+    networks:
+      - my_network
+
+  redis:
+    image: "redis:alpine"
+    networks:
+    - my_network
+
+  
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx_dev.conf:/etc/nginx/nginx.conf
+      - static_volume:/home/backend/static
+      - media_volume:/home/backend/media
+
+    networks:
+      - my_network  
+
+    depends_on:
+      - backend
+      
+    restart:
+      always
+
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+      - 4444:4444
+    restart: always
+    networks:
+    - my_network
+
+    
+
+volumes:
+  static_volume:
+  media_volume:
+  mysql_data:  # اضافه شده برای MySQL
+
+networks:
+  my_network:
+    driver: bridge
