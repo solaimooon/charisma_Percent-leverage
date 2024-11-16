@@ -44,19 +44,19 @@ def scraping():
         page = 1
         print("صندوق",fund)
         while True:
-            # باز کردن صفحه وب
+            # open the web
             time.sleep(3)
             driver.get(dic_of_fund_url[fund].format(str(page)))
 
-            # پیدا کردن جدول
+            # find the table 
             table = driver.find_element(By.CSS_SELECTOR, ".table.m-0")
             table_body = table.find_element(By.TAG_NAME, "tbody")
             rows = table_body.find_elements(By.TAG_NAME, "tr")
 
-            if not rows:  # اگر جدولی وجود ندارد
-                break  # خروج از حلقه
+            if not rows:  
+                break  
 
-            # استخراج داده‌های هر ردیف
+            # get data from cells
             for row in rows:
                 cells = row.find_elements(By.TAG_NAME, "td")
                 Financial_data_object = Financial_data(fund=mfund_object)
@@ -71,7 +71,7 @@ def scraping():
                 print(date)
 
 
-            # افزایش شماره صفحه برای دریافت صفحه بعدی
+            
             page += 1
             print("صفحه",page)
     driver.quit()    
