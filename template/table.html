@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load filter_tags %}
 {% block countent%}
 
 <div class="col-lg-9">
@@ -30,7 +31,7 @@
                             <tr>
                                 
                                 <td>{{ row.date }}</td>
-                                <td>{{ row.Leverage_percentage_1 }}</td>
+                                <td>{{ row.Leverage_percentage_1}}</td>
                                 <td>{{ row.Leverage_percentage_2 }}</td>
                                 <td>{{ row.Leverage_percentage_3 }}</td>
                                 <td>{{ row.Leverage_percentage_4 }}</td>

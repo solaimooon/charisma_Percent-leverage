@@ -54,24 +54,24 @@ def historycal_table(request):
         t6.Leverage_percentage AS Leverage_percentage_6,
         t7.Leverage_percentage AS Leverage_percentage_7
     FROM 
-        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 7) t1
+        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 1) t1
     LEFT JOIN 
-        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 8) t2 
+        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 2) t2 
         ON t1.date = t2.date
     LEFT JOIN 
-        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 9) t3 
+        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 3) t3 
         ON t1.date = t3.date
     LEFT JOIN 
-        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 10) t4 
+        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 4) t4 
         ON t1.date = t4.date
     LEFT JOIN 
-        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 11) t5 
+        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 5) t5 
         ON t1.date = t5.date
     LEFT JOIN 
-        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 12) t6 
+        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 6) t6 
         ON t1.date = t6.date
     LEFT JOIN 
-        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 13) t7 
+        (SELECT date, Leverage_percentage FROM comparision_leveraged_financial_data WHERE fund_id = 7) t7 
         ON t1.date = t7.date
     ORDER BY 
         t1.date DESC;
